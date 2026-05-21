@@ -81,9 +81,7 @@ Ao ligar o bot pela primeira vez:
 ## 5. Menus de Comandos
  * **#menu**: Menu principal com todas as categorias.
  * **#menuadm**: Comandos para administradores de grupo.
- * **#menudono**: Comandos exclusivos para **Josué </>** (dono do bot).
- * **#brincadeiras**: Rankings e ações divertidas entre membros.
- * **#menulogos**: Criação de logos personalizadas.
+ * **#menudono**: Comandos exclusivos para **Dono**
 ## 📢 Aviso
 Este projeto é destinado para fins de estudo, automação e uso pessoal. Use com responsabilidade e respeite as regras do WhatsApp e dos grupos onde o bot for utilizado.
 <div align="center">
