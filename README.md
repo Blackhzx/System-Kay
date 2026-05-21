@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://readme-typing-svg.herokuapp.com/?font=mono&size=30&duration=4000&color=00008b&center=true&vCenter=true&lines=🜛+SYSTEM-KAY+V1.0.0+🜛;۞+CRIADO+POR+JOSU%C3%A9+%3C%2F%3E+۞">      
+<img src="https://readme-typing-svg.herokuapp.com/?font=mono&size=30&duration=4000&color=00008b&center=true&vCenter=true&lines=🜛+SYSTEM-KAY+V1.0.0+🜛;۞+CRIADO+POR+JOSU%C3%89+%3C%2F%3E+%26+LOPES+%26+DARK+۞">      
 </div>
 
 <h1 align="center">
@@ -57,12 +57,15 @@ O **System-Kay** é um bot para WhatsApp desenvolvido em Node.js. Ele oferece di
 Para mudar o nome do bot, o prefixo ou o dono, edite o arquivo de configuração principal (geralmente config.json ou o seu arquivo central):
 ```json
 {
-  "prefix": "#",
-  "NomeDoBot": "System-Kay",
-  "NickDono": "Josué </>",
-  "numerodono": "5511999999999"
+    "NumberDono": "558892659041",
+    "prefix": "™",
+    "NickDono": "Lopes' 🇪🇸",
+    "NomeBot": "Kay system",
+    "SHIZUKU_SITE": "https://shizuku-apis.shop",
+    "SHIZUKU_KEY": "key-free",
+    "sysite": "https://systemzone.store",
+    "syskey": "freekey"
 }
-
 ```
  * **prefix**: O símbolo para usar comandos (ex: #).
  * **NomeDoBot**: O nome que o bot terá nas respostas.
@@ -86,7 +89,7 @@ Este projeto é destinado para fins de estudo, automação e uso pessoal. Use co
 <div align="center">
 <img src="https://readme-typing-svg.herokuapp.com?font=JetBrains+Mono&weight=700&size=28&duration=3500&pause=700&color=0066FF&center=true&vCenter=true&width=850&lines=%E2%95%B0%E2%80%A2%E2%98%85+SYSTEM-KAY+V1.0.0+%E2%98%85%E2%80%A2%E2%95%AF;%F0%9F%9A%80+Obrigado+por+usar+o+projeto;%F0%9F%91%91+Criado+por+Josu%C3%A9+%3C%2F%3E" alt="Footer Typing SVG" />
 ### 👑 Autor
-**Josué </>**
+*Josué </>*
 <img src="https://img.shields.io/badge/Status-Online-00C853?style=for-the-badge&logo=whatsapp&logoColor=white" />
 <img src="https://img.shields.io/badge/Feito%20com-Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white" />
 <img src="https://img.shields.io/badge/Projeto-System--Kay-0066FF?style=for-the-badge&logo=github&logoColor=white" />
