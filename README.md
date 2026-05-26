@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://readme-typing-svg.herokuapp.com/?font=mono&size=30&duration=4000&color=00008b&center=true&vCenter=true&lines=🜛+SYSTEM-KAY+V1.0.0+🜛;۞+CRIADO+POR+JOSU%C3%89+%3C%2F%3E+%26+LOPES+%26+DARK+۞">      
+<img src="https://readme-typing-svg.herokuapp.com/?font=mono&size=30&duration=4000&color=00008b&center=true&vCenter=true&lines=🜛+SYSTEM-KAY+V1.0.1+🜛;۞+CRIADO+POR+JOSU%C3%89+%3C%2F%3E+%26+LOPES+%26+DARK+۞">      
 </div>
 
 <h1 align="center">
