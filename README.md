@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://readme-typing-svg.herokuapp.com/?font=JetBrains+Mono&size=34&duration=3000&color=FFD700&center=true&vCenter=true&lines=⚡+SYSTEM+KAY+V1.0.1+⚡;🚀+WHATSAPP+BOT+MULTI+DEVICE;👑+JOSUÉ+•+LOPES+•+DARK">
+<img src="https://readme-typing-svg.herokuapp.com/?font=JetBrains+Mono&size=34&duration=3000&color=FFD700&center=true&vCenter=true&lines=⚡+SYSTEM+KAY+V1.0.1+⚡;🚀+WHATSAPP+BOT+MULTI+DEVICE;👑+JOSUÉ+•+LOPES">
 
 <br>
 
@@ -20,7 +20,7 @@
 
 > Bot WhatsApp completo feito em Node.js
 
-✨ Automação • 🎮 RPG • 🛡️ Moderação • 🔗 APIs
+✨ Automação • 🎮 brinks • 🛡️ Moderação • 🔗 APIs
 
 ---
 
@@ -78,9 +78,10 @@ npm start
 
 ⚡ **Essencial:**
 - NumberDono = seu número  
-- prefix = comandos  
-- NomeBot = nome  
-
+- prefix = prefixo do bot
+- NickDono = Nick do proprietário 
+- NomeBot = nome do bot
+- syskey = seu token
 ---
 
 # 🔗 CONEXÃO
@@ -96,7 +97,7 @@ npm start
 
 | Comando | Função |
 |--------|--------|
-| #menu | geral |
+| #menu | menu list |
 | #menuadm | admin |
 | #menudono | dono |
 
@@ -104,12 +105,11 @@ npm start
 
 # 🧠 FEATURES
 
-- 🎮 RPG system  
+- 🎮 menu de brincadeiras 
 - 🛡️ anti-link / moderação  
 - 🎨 menus estilizados  
 - 📥 downloader (yt, etc)  
 - 🤖 respostas automáticas  
-- 📊 sistema de nível  
 - 📂 comandos organizados  
 
 ---
@@ -118,8 +118,8 @@ npm start
 
 ```
 📁 system-kay
- ┣ 📂 comandos
- ┣ 📂 settings
+ ┣ 📂 DATABASE2 
+ ┣ 📂 ++
  ┣ 📂 dono
  ┣ 📂 midia
  ┣ 📜 index.js
@@ -131,8 +131,7 @@ npm start
 
 # ⚠️ AVISO
 
-✔️ Uso pessoal  
-✔️ Estudos  
+Este projeto é destinado para fins de estudo, automação e uso pessoal. Use com responsabilidade e respeite as regras do WhatsApp e dos grupos onde o bot for utilizado.
 
 ❌ Sem spam  
 ❌ Respeite o WhatsApp  
@@ -144,8 +143,7 @@ npm start
 <div align="center">
 
 👑 Josué </>  
-⚡ Lopes  
-🌑 Dark  
+🐦‍🔥 Lopes' 🇪🇸 
 
 <br>
 
