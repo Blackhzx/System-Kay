@@ -14,7 +14,7 @@
 
 <p align="center">
 <img title="Autor" src="https://img.shields.io/badge/Autor-Josu%C3%A9_%3C%2F%3E-orange.svg?style=for-the-badge&logo=github"></a>
-<img title="Versão" src="https://img.shields.io/badge/Versão-1.0.0-orange.svg?style=for-the-badge&logo=github"></a>
+<img title="Versão" src="https://img.shields.io/badge/Versão-1.0.1-orange.svg?style=for-the-badge&logo=github"></a>
 </p>
 
 ---
