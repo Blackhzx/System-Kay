@@ -1,0 +1,21 @@
+[
+  {
+    "name": "Shizuku </> APIS | [ CHAT ] 💻",
+    "groupId": "120363422900823692@g.us",
+    "antilinkhard": false,
+    "wellcome": [
+      {
+        "bemvindo1": true,
+        "legendabv": "olá #numerodele#, seja muito bem vind# ao grupo: #nomedogp#, por favor leia a descrição abaixo 👇\n\n#descrição#",
+        "legendasaiu": "Adeus, #numerodele#, espero que não se arrependa pela sua decisão. "
+      },
+      {
+        "bemvindo2": false,
+        "legendabv": "Olá #numerodele#, seja bem vindo(a) ao Grupo: *#nomedogp#*, Shizuku lhe deseja as boas vindas 🕸️",
+        "legendasaiu": "Adeus, #numerodele#, espero que não se arrependa pela sua decisão. "
+      }
+    ],
+    "bangp": false,
+    "So_Admins": false
+  }
+]

@@ -1,0 +1,21 @@
+[
+  {
+    "name": "Tffg",
+    "groupId": "120363404636047287@g.us",
+    "antilinkhard": true,
+    "wellcome": [
+      {
+        "bemvindo1": true,
+        "legendabv": "Olá #numerodele#, seja bem vindo(a) ao Grupo: *#nomedogp#*, Shizuku lhe deseja as boas vindas 🕸️",
+        "legendasaiu": "Adeus, #numerodele#, espero que não se arrependa pela sua decisão. "
+      },
+      {
+        "bemvindo2": false,
+        "legendabv": "Olá #numerodele#, seja bem vindo(a) ao Grupo: *#nomedogp#*, Shizuku lhe deseja as boas vindas 🕸️",
+        "legendasaiu": "Adeus, #numerodele#, espero que não se arrependa pela sua decisão. "
+      }
+    ],
+    "bangp": false,
+    "So_Admins": false
+  }
+]
