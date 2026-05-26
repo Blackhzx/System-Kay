@@ -118,13 +118,20 @@ npm start
 
 ```
 📁 system-kay
- ┣ 📂 DATABASE2 
- ┣ 📂 ++
- ┣ 📂 dono
- ┣ 📂 midia
- ┣ 📜 index.js
- ┣ 📜 config.json
- ┗ 📜 package.json
+
+ 📁 DATABASE2
+📁 dono
+📁 gifs
+📁 node_modules
+📄 connect.js
+📄 consts.js
+📄 index.js
+📄 instalar.sh
+📄 lopes.js
+📄 package.json
+📄 package-lock.json
+📄 start.sh
+
 ```
 
 ---
@@ -149,7 +156,7 @@ Este projeto é destinado para fins de estudo, automação e uso pessoal. Use co
 
 <img src="https://img.shields.io/badge/JOSUÉ-FFD700?style=for-the-badge&logo=github&logoColor=black">
 <img src="https://img.shields.io/badge/LOPES-FFD700?style=for-the-badge&logo=github&logoColor=black">
-<img src="https://img.shields.io/badge/DARK-FFD700?style=for-the-badge&logo=github&logoColor=black">
+<img
 
 </div>
 
