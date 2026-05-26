@@ -1,32 +1,32 @@
 <div align="center">
 
-<img src="https://readme-typing-svg.herokuapp.com/?font=JetBrains+Mono&size=32&duration=3500&color=00008b&center=true&vCenter=true&lines=🜛+SYSTEM-KAY+V1.0.1+🜛;⚡+BOT+WHATSAPP+MULTI+DEVICE+⚡;👑+JOSUÉ+%3C%2F%3E+•+LOPES+•+DARK+👑">
+<img src="https://readme-typing-svg.herokuapp.com/?font=JetBrains+Mono&size=34&duration=3000&color=FFD700&center=true&vCenter=true&lines=⚡+SYSTEM+KAY+V1.0.1+⚡;🚀+WHATSAPP+BOT+MULTI+DEVICE;👑+JOSUÉ+•+LOPES+•+DARK">
 
 <br>
 
-<img src="dono/menus/Foto-menu/img-menu.jpg" alt="SYSTEM-KAY" width="100%">
+<img src="dono/menus/Foto-menu/img-menu.jpg" width="100%"/>
 
 <br><br>
 
-<img src="https://img.shields.io/badge/BOT-MULTI--DEVICE-blue?style=for-the-badge">
-<img src="https://img.shields.io/badge/VERSÃO-1.0.1-orange?style=for-the-badge&logo=github">
-<img src="https://img.shields.io/badge/AUTOR-Josu%C3%A9_%3C%2F%3E-orange?style=for-the-badge&logo=github">
+<img src="https://img.shields.io/badge/STATUS-ONLINE-FFD700?style=for-the-badge&logo=whatsapp&logoColor=black">
+<img src="https://img.shields.io/badge/BOT-MULTI--DEVICE-FFD700?style=for-the-badge&logo=github&logoColor=black">
+<img src="https://img.shields.io/badge/NODE.JS-POWER-FFD700?style=for-the-badge&logo=node.js&logoColor=black">
 
 </div>
 
 ---
 
-# 🧠 SYSTEM KAY
+# ⚡ SYSTEM KAY
 
-O **System-Kay** é um bot avançado para WhatsApp desenvolvido em **Node.js**, focado em automação, entretenimento e gerenciamento de grupos.
+> Bot WhatsApp completo feito em Node.js
+
+✨ Automação • 🎮 RPG • 🛡️ Moderação • 🔗 APIs
 
 ---
 
-# 🚀 INSTALAÇÃO E START (RÁPIDO)
+# 🚀 START RÁPIDO
 
-Siga corretamente os passos abaixo:
-
-## 📦 1. Instalar Pacotes Necessários
+## 📦 Instalar tudo
 ```bash
 apt-get update -y && pkg upgrade -y && pkg update -y
 pkg install nodejs -y
@@ -37,57 +37,31 @@ pkg install tesseract -y
 pkg install git -y
 ```
 
-⚠️ Sempre digite **y** quando solicitado.
-
----
-
-## 📁 2. Configurar Armazenamento
+## 📁 Storage
 ```bash
 termux-setup-storage
 ```
 
----
-
-## 📥 3. Baixar o Bot
+## 📥 Clone
 ```bash
 cd /sdcard/Download
 git clone https://github.com/Blackhzx/system-kay.git
 cd system-kay
 ```
 
----
-
-## 📦 4. Instalar Dependências
+## 📦 Dependências
 ```bash
 npm install --force --no-bin-links
 ```
 
----
-
-## ▶️ 5. Iniciar o Bot
+## ▶️ Start
 ```bash
 npm start
 ```
 
 ---
 
-# 📖 INFORMAÇÕES DETALHADAS
-
-## 🔎 1. Visão Geral
-
-O bot possui:
-
-- 🎮 Sistema RPG  
-- 🛡️ Moderação automática  
-- 🎨 Menus estilizados  
-- 🔗 Integração com APIs  
-- ⚡ Sistema rápido e otimizado  
-
----
-
-## ⚙️ 2. Configuração
-
-Edite o arquivo principal (`config.json`):
+# ⚙️ CONFIG
 
 ```json
 {
@@ -102,42 +76,41 @@ Edite o arquivo principal (`config.json`):
 }
 ```
 
-### 📌 Explicação:
-
-- `prefix` → Prefixo dos comandos  
-- `NomeBot` → Nome do bot  
-- `NickDono` → Nome do dono  
-- `NumberDono` → Seu número (com DDI)  
+⚡ **Essencial:**
+- NumberDono = seu número  
+- prefix = comandos  
+- NomeBot = nome  
 
 ---
 
-## 👑 3. Sistema de Dono
+# 🔗 CONEXÃO
 
-Para virar dono do bot:
-
-✔️ Coloque seu número em `NumberDono`  
-✔️ Tenha acesso total aos comandos  
-
----
-
-## 🔗 4. Conexão
-
-Ao iniciar o bot:
-
-1. Digite seu número (ex: 5511999999999)  
-2. Será gerado um código de 8 dígitos  
-3. No WhatsApp:
-   - Vá em **Aparelhos Conectados**
-   - Clique em **Conectar com número**
-   - Insira o código  
+1. Digite número  
+2. Pegue código  
+3. WhatsApp → aparelhos conectados  
+4. Inserir código  
 
 ---
 
-## 📜 5. Menus
+# 📜 COMANDOS
 
-- `#menu` → Menu geral  
-- `#menuadm` → Admin  
-- `#menudono` → Dono  
+| Comando | Função |
+|--------|--------|
+| #menu | geral |
+| #menuadm | admin |
+| #menudono | dono |
+
+---
+
+# 🧠 FEATURES
+
+- 🎮 RPG system  
+- 🛡️ anti-link / moderação  
+- 🎨 menus estilizados  
+- 📥 downloader (yt, etc)  
+- 🤖 respostas automáticas  
+- 📊 sistema de nível  
+- 📂 comandos organizados  
 
 ---
 
@@ -158,11 +131,11 @@ Ao iniciar o bot:
 
 # ⚠️ AVISO
 
-✔️ Uso para estudos  
-✔️ Automação pessoal  
+✔️ Uso pessoal  
+✔️ Estudos  
 
-❌ Não use para spam  
-❌ Respeite regras do WhatsApp  
+❌ Sem spam  
+❌ Respeite o WhatsApp  
 
 ---
 
@@ -170,17 +143,15 @@ Ao iniciar o bot:
 
 <div align="center">
 
-### 🔥 DESENVOLVEDORES
-
 👑 Josué </>  
 ⚡ Lopes  
 🌑 Dark  
 
 <br>
 
-<img src="https://img.shields.io/badge/JOSUÉ-DEV-orange?style=for-the-badge&logo=github">
-<img src="https://img.shields.io/badge/LOPES-DEV-blue?style=for-the-badge&logo=github">
-<img src="https://img.shields.io/badge/DARK-DEV-black?style=for-the-badge&logo=github">
+<img src="https://img.shields.io/badge/JOSUÉ-FFD700?style=for-the-badge&logo=github&logoColor=black">
+<img src="https://img.shields.io/badge/LOPES-FFD700?style=for-the-badge&logo=github&logoColor=black">
+<img src="https://img.shields.io/badge/DARK-FFD700?style=for-the-badge&logo=github&logoColor=black">
 
 </div>
 
@@ -188,12 +159,6 @@ Ao iniciar o bot:
 
 <div align="center">
 
-<img src="https://readme-typing-svg.herokuapp.com?font=JetBrains+Mono&size=26&duration=3000&pause=700&color=0066FF&center=true&vCenter=true&width=800&lines=🚀+OBRIGADO+POR+USAR+O+SYSTEM+KAY;💙+SUPORTE+O+PROJETO;⚡+SEMPRE+EM+EVOLUÇÃO">
-
-<br>
-
-<img src="https://img.shields.io/badge/STATUS-ONLINE-00C853?style=for-the-badge&logo=whatsapp&logoColor=white">
-<img src="https://img.shields.io/badge/FEITO+COM-NODE.JS-339933?style=for-the-badge&logo=node.js&logoColor=white">
-<img src="https://img.shields.io/badge/PROJETO-SYSTEM--KAY-0066FF?style=for-the-badge&logo=github&logoColor=white">
+<img src="https://readme-typing-svg.herokuapp.com/?font=JetBrains+Mono&size=24&duration=3000&color=FFD700&center=true&vCenter=true&lines=🔥+OBRIGADO+POR+USAR;⚡+SYSTEM+KAY;🚀+EM+EVOLUÇÃO">
 
 </div>
