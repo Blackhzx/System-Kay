@@ -1,4 +1,4 @@
-// Bot desenvolvido por: Lopes' & Josué.
+// Bot desenvolvido por: Lopes' & Josué & Dark
 // proibido venda !!!
 // essa base foi feita para ajudar vcs y testar novos comandos da Baileys @systemzero.
 // canal KAY SYSTEM 🇪🇸 
@@ -16,7 +16,9 @@ const { NumberDono, prefix, NickDono, NomeBot, SHIZUKU_KEY, SHIZUKU_SITE, sysite
 const ytSearch = require('yt-search');
 const chalk = require('chalk');
 const { version } = require("./package");
-
+const {
+    sistemaVerificacao
+} = require('./database/verificacao');
 const { 
 fetchJson, 
 colors, 
@@ -51,6 +53,7 @@ BuscarNogpt,
 BaixarNoYt,
 ttkdl,
 instadl,
+play_video,
 METADINHAS,
 ANT_LTR_MD_EMJ,
 dono1,
@@ -291,9 +294,20 @@ var tempo = 'Boa noite'
 }
 
 
-const isBotGroupAdmins = So_Admins?.includes(botNumber) || false;
-const isGroupAdmins = So_Admins.includes(sender) || false || So_Dono ||SoBot || IsCreator || SoCriador
+let isBotGroupAdmins = So_Admins?.includes(botNumber) || false;
+let isGroupAdmins    = So_Admins.includes(sender) || false || So_Dono || SoBot || IsCreator || SoCriador;
 
+const executorJid            = info.key.participant || info.key.remoteJid || sender;
+const executorJidNormalizado = jidNormalizedUser(executorJid);
+
+const verificarGlobal = isGroup
+    ? await sistemaVerificacao(conn, from, executorJidNormalizado, { numerodono: NumberDono }, botNumber)
+    : null;
+
+if (isGroup && verificarGlobal) {
+    isGroupAdmins    = verificarGlobal.isSenderAdmin || verificarGlobal.isDonoBot || false;
+    isBotGroupAdmins = verificarGlobal.isBotAdmin    || false;
+}
 // FUNÇÕES DE MARCAÇÕES ESSENCIAL \\
 //FUNÇÃO BY: Lopes' , NÃO TIRA OS CRÉDITOS DESGRAÇA!!
 let menc_prt = info.message?.extendedTextMessage?.contextInfo?.participant || '';
@@ -418,24 +432,37 @@ if (info?.message?.reactionMessage) {
 }
 
 //==={ANTI LINK} ===\\
-let isTrueFalse = Array('tiktok', 'facebook','instagram','twitter','ytmp3','ytmp4','play', 'playmix', 'play2', 'play3', 'playvid', 'playvid2').some(item => item === command)
-
-if(isUrl(PR_String) && isAntiLinkHard && !isGroupAdmins && isBotGroupAdmins && !info.key.fromMe) {
-if(Procurar_String.includes("chat.whatsapp.com")) {
-link_dgp = await conn.groupInviteCode(from)
-if(Procurar_String.match(link_dgp)) return reply('Link do nosso grupo, não irei remover.. ') 
-}
-if(isCmd && isTrueFalse) return reply("o Erro ta aq")
-setTimeout(() => {
-conn.sendMessage(from, { delete: { remoteJid: from, fromMe: false, id: info.key.id, participant: sender}})
-}, 1200);
-conn.groupSettingUpdate(from, 'announcement')
-setTimeout(() => {
-conn.groupSettingUpdate(from, 'not_announcement')
-}, 1200)
-if(!JSON.stringify(MembrosGP).includes(sender)) return
-conn.groupParticipantsUpdate(from, [sender], 'remove')
-}//FIM
+let isTrueFalse = Array('tiktok','facebook','instagram','twitter','ytmp3','ytmp4','play','playmix','play2','play3','playvid','playvid2').some(item => item === command);
+if (isUrl(PR_String) && isAntiLinkHard && !isGroupAdmins && isBotGroupAdmins && !info.key.fromMe) {
+  const senderLimpo = jidNormalizedUser(sender);
+  const botLimpo    = jidNormalizedUser(botNumber);
+  if (senderLimpo === botLimpo) return;
+  if (isCmd && isTrueFalse) return;
+  if (Procurar_String.includes("chat.whatsapp.com")) {
+    try {
+      const link_dgp = await conn.groupInviteCode(from);
+      if (Procurar_String.includes(link_dgp)) return reply('_Link do nosso grupo, não irei remover._');
+    } catch (_) {}
+  }
+  const verificarAnti = await sistemaVerificacao(conn, from, senderLimpo, { numerodono: NumberDono }, botNumber).catch(() => null);
+  if (verificarAnti?.isSenderAdmin) return;
+  try {
+    await conn.sendMessage(from, {
+      delete: {
+        remoteJid:   from,
+        fromMe:      false,
+        id:          info.key.id,
+        participant: sender 
+       }
+    });
+  } catch (_) {}
+  const aindaNoGrupo = MembrosGP.some(m => jidNormalizedUser(m.id) === senderLimpo);
+  if (aindaNoGrupo) {
+    try {
+      await conn.groupParticipantsUpdate(from, [senderLimpo], 'remove');
+    } catch (_) {}
+  }
+} //FIM ANTI LINK
 
 
 //EVAL E EXECUÇÕES 
@@ -505,6 +532,26 @@ if (!isCmd) return;// ISSO AQUI VAI PARA SE VIER SÓ MENSAGEM SEM PREFIXO, OK?
 switch (command) {
 
 //COMANDOS DE ADMIN'S!!
+case 'antistatus': {
+  try {
+if (!isGroup) return reply("Só em grupo.");
+if (!isGroupAdmins) return reply(msg.SoAdmin);
+    if (dataGp[0].antistatus === undefined) dataGp[0].antistatus = false;
+    dataGp[0].antistatus = !dataGp[0].antistatus;
+    const novoEstado = dataGp[0].antistatus;
+    setGp(dataGp);
+
+    const msg = novoEstado
+      ? '_Anti-Status *ativado* neste grupo. Todos os status enviados aqui serão deletados automaticamente._'
+      : '_Anti-Status *desativado* neste grupo._';
+    await reply(msg);
+  } catch (e) {
+    console.error('[ERRO ANTISTATUS CMD]', e);
+    reply('_Erro ao alternar o Anti-Status._');
+  }
+}
+break;
+
 case 'promover': {
 if (!isGroup) return reply("Só em grupo.");
 if (!isGroupAdmins) return reply(msg.SoAdmin);
@@ -542,241 +589,269 @@ case 'banir':
 case 'kick':
 case 'avadakedavra': {
     try {
+        if (!isGroup) return reply("❌ Apenas em grupos.");
 
-        if (!isGroup) {
-            return reply("❌ Esse comando só pode ser usado em grupos.");
-        }
+        const executorJid = info.key.participant || info.key.remoteJid || sender;
+        const executorJidNormalizado = jidNormalizedUser(executorJid);
 
-        if (!isGroupAdmins && !So_Dono) {
-            return reply(msg.SoAdmin);
-        }
+        const verificar = await sistemaVerificacao(conn, from, executorJidNormalizado, { numerodono: NumberDono }, botNumber);
 
-        const contextInfo =
-            info?.message?.extendedTextMessage?.contextInfo ||
-            info?.msg?.contextInfo ||
-            info?.contextInfo ||
-            {};
+        if (!verificar.isSenderAdmin && !verificar.isDonoBot) return reply("❌ Apenas administradores.");
+        if (!verificar.isBotAdmin) return reply("❌ O bot precisa ser admin.");
 
+        const contextInfo = info?.message?.extendedTextMessage?.contextInfo || info?.msg?.contextInfo || info?.contextInfo || {};
         let alvo = null;
 
-        // 1 - USUÁRIO MENCIONADO
-        if (
-            Array.isArray(contextInfo.mentionedJid) &&
-            contextInfo.mentionedJid.length > 0
-        ) {
+        if (Array.isArray(contextInfo.mentionedJid) && contextInfo.mentionedJid.length > 0) {
             alvo = contextInfo.mentionedJid[0];
-        }
-
-        else if (contextInfo.participant) {
+        } else if (contextInfo.participant) {
             alvo = contextInfo.participant;
-        }
-
-        else if (info?.quoted?.sender) {
+        } else if (info?.quoted?.sender) {
             alvo = info.quoted.sender;
-        }
-
-        // 4 - PEGAR @ DO TEXTO
-        else {
-            const texto =
-                info?.message?.extendedTextMessage?.text ||
-                info?.message?.conversation ||
-                q ||
-                "";
-
-            const match = texto.match(/@(\d+)/);
-
-            if (match?.[1]) {
-                alvo = `${match[1]}@s.whatsapp.net`;
-            }
-        }
-
-        if (!alvo && q) {
+        } else if (q) {
             const numero = q.replace(/\D/g, '');
-
-            if (numero.length >= 5) {
-                alvo = `${numero}@s.whatsapp.net`;
-            }
+            if (numero.length >= 5) alvo = numero;
         }
 
-        if (!alvo || alvo === sender) {
-            return reply(
-                "❌ Marque a mensagem, mencione um usuário ou envie o número."
-            );
-        }
+        if (!alvo) return reply("❌ Marque, responda ou envie o número.");
 
-        // METADATA DO GRUPO
-        const metadata = await conn.groupMetadata(from);
-        const participantes = metadata.participants || [];
+        const membro = verificar.buscarMembro(alvo);
+        if (!membro) return reply("❌ Usuário não encontrado.");
 
-        // LOCALIZAR MEMBRO
-        const alvoNumero = String(alvo).replace(/\D/g, '');
+        const alvoId = verificar.getId(membro);
+        const alvoNumero = verificar.getNumero(membro);
+        const alvoAdmin = verificar.isAdmin(membro);
+        const alvoDono = verificar.isDono(membro);
+        const executorNumero = verificar.getNumero({ id: executorJidNormalizado });
+        const botNumeroLimpo = botNumber.replace(/\D/g, '');
 
-        const membro = participantes.find((user) => {
-            const id = String(user.id || user.jid || user.lid || "");
-            const numero = id.replace(/\D/g, '');
-
-            return (
-                numero.includes(alvoNumero) ||
-                alvoNumero.includes(numero)
-            );
-        });
-
-        if (!membro) {
-            return reply("❌ Esse usuário não está no grupo.");
-        }
-
-        // ID REAL
-        alvo = String(membro.id || membro.jid || membro.lid || "");
-
-        // VERIFICAR ADMIN
-        const isAdmin = participantes.find((user) => {
-
-            if (!user.admin) return false;
-
-            const id = String(user.id || user.jid || user.lid || "");
-            const numero = id.replace(/\D/g, '');
-
-            return (
-                numero.includes(alvoNumero) ||
-                alvoNumero.includes(numero)
-            );
-        });
-
-        const numeroBot = String(botNumber).replace(/\D/g, '');
-
-        if (String(alvo).replace(/\D/g, '') === numeroBot) {
-
-            await conn.groupParticipantsUpdate(from, [sender], "demote");
-
-            await conn.sendMessage(from, {
-                text: `⚠️ @${sender.replace(/\D/g, '')} tentou remover o bot e perdeu ADM 😹`,
-                mentions: [sender]
-            });
-
+        if (alvoNumero === executorNumero) return reply("❌ Você não pode se remover.");
+        if (alvoNumero === botNumeroLimpo || alvoId === botNumber) {
+            await conn.sendMessage(from, { text: `⚠️ @${executorNumero} tentou remover o bot 😹`, mentions: [sender] });
             return;
         }
-
-        const donos = Array.isArray(NumberDono)
-            ? NumberDono
-            : [NumberDono];
-
-        const donoProtegido = donos.find((numero) => {
-            return (
-                String(numero || "").replace(/\D/g, '') ===
-                String(alvo || "").replace(/\D/g, '')
-            );
-        });
-
-        if (donoProtegido) {
-
-            await conn.groupParticipantsUpdate(from, [sender], "demote");
-
-            await conn.sendMessage(from, {
-                text: `☠️ @${sender.replace(/\D/g, '')} tentou remover o dono e perdeu ADM 😹`,
-                mentions: [sender]
-            });
-
+        if (alvoDono) {
+            await conn.sendMessage(from, { text: `☠️ @${executorNumero} tentou remover o dono 😹`, mentions: [sender] });
             return;
         }
+        if (alvoAdmin) return reply("❌ Não posso remover administradores.");
 
-        if (isAdmin) {
-            return reply("❌ Não posso remover outro administrador.");
-        }
-
-        // REAÇÃO
         await reagir(from, "🚫");
-
-        // 🔥 REMOVER
-        await conn.groupParticipantsUpdate(from, [alvo], "remove");
-
-        // 🔥 MENSAGEM CURTA
-        await conn.sendMessage(
-            from,
-            {
-                text: `🚫 @${alvo.replace(/\D/g, '')} removido.`,
-                mentions: [alvo]
-            },
-            { quoted: info }
-        );
-
+        await conn.groupParticipantsUpdate(from, [alvoId], "remove");
+        await conn.sendMessage(from, { text: `🚫 @${alvoNumero} removido do grupo.`, mentions: [alvoId] }, { quoted: info });
         await reagir(from, "✅");
 
     } catch (erro) {
-
         console.log(erro);
-
         await reagir(from, "❌");
-
-        reply("❌ Ocorreu um erro ao remover o usuário.");
+        reply("❌ Erro ao remover usuário.");
     }
 }
 break;
 
-
 case 'mute': {
-  if (!isGroup) return reply(msg.SoEmGrupo);
-  if (!isGroupAdmins) return reply(msg.SoAdmin);
-  if (!isBotGroupAdmins) return reply(msg.BotAdmin);
-  if (!menc_os2) return reply(`*🎯 ᴍᴇɴᴄɪᴏɴᴇ ǫᴜᴇᴍ ǫᴜᴇʀ ᴘᴜɴɪʀ*`);
+    try {
+        if (!isGroup) return reply(msg.SoEmGrupo);
 
-  if (botNumber.includes(menc_os2)) return reply(`*ɴᴀᴏ ᴘᴏssᴏ ᴍᴜᴛᴀʀ ᴏ ʙᴏᴛ 😵*`);
-  if (MeuNumero.includes(menc_os2)) return reply(`*ɴᴀᴏ ᴏᴜsᴇ ᴛᴏᴄᴀʀ ɴᴏ ᴍᴇᴜ ᴅᴏɴᴏ 💢*`);
-  if (So_Admins?.includes(menc_os2)) return reply(`*ɴᴀᴏ ᴘᴏᴅᴇ ᴍᴜᴛᴀʀ ᴜᴍ ᴀᴅᴍɪɴ*`);
+        const executorJid = info.key.participant || info.key.remoteJid || sender;
+        const executorJidNormalizado = jidNormalizedUser(executorJid);
 
-  const dirMute = `./DATABASE2/GRUPOS/MUTE/${from}.json`;
-  if (!fs.existsSync('./DATABASE2/GRUPOS/MUTE')) {
-    fs.mkdirSync('./DATABASE2/GRUPOS/MUTE', { recursive: true });
-  }
-  if (!fs.existsSync(dirMute)) {
-    fs.writeFileSync(dirMute, JSON.stringify([{ silenciados: [], mutados: [] }], null, 2));
-  }
-  const dataMute = JSON.parse(fs.readFileSync(dirMute));
-  const grupoMute = dataMute[0];
+        const verificar = await sistemaVerificacao(conn, from, executorJidNormalizado, { numerodono: NumberDono }, botNumber);
 
-  const tipo = args[0]?.toLowerCase() === 'silenciar' ? 'silenciar' : 'mutar';
+        if (!verificar.isSenderAdmin && !verificar.isDonoBot) return reply(msg.SoAdmin);
+        if (!verificar.isBotAdmin) return reply(msg.BotAdmin);
 
-  if (tipo === 'silenciar') {
-    if (grupoMute.silenciados.includes(menc_os2)) {
-      return mention(`*ᴏ @${menc_os2.split('@')[0]} ᴊᴀ ᴇsᴛᴀ sɪʟᴇɴᴄɪᴀᴅᴏ*`);
+        let alvo = null;
+        const contextInfo = info?.message?.extendedTextMessage?.contextInfo || {};
+
+        if (contextInfo.mentionedJid?.length > 0) {
+            alvo = contextInfo.mentionedJid[0];
+        } else if (contextInfo.participant) {
+            alvo = contextInfo.participant;
+        } else if (info?.quoted?.sender) {
+            alvo = info.quoted.sender;
+        } else if (q) {
+            const numero = q.replace(/\D/g, '');
+            if (numero.length >= 5) alvo = numero;
+        }
+
+        if (!alvo) return reply(`*🎯 ᴍᴇɴᴄɪᴏɴᴇ ǫᴜᴇᴍ ǫᴜᴇʀ ᴘᴜɴɪʀ*`);
+
+        const membro = verificar.buscarMembro(alvo);
+        if (!membro) return reply("❌ Usuário não encontrado.");
+
+        const alvoId = verificar.getId(membro);
+        const alvoNumero = verificar.getNumero(membro);
+        const alvoAdmin = verificar.isAdmin(membro);
+        const alvoDono = verificar.isDono(membro);
+        const executorNumero = verificar.getNumero({ id: executorJidNormalizado });
+        const botNumeroLimpo = botNumber.replace(/\D/g, '');
+
+        if (alvoNumero === executorNumero) return reply("❌ Você não pode se punir.");
+        if (alvoNumero === botNumeroLimpo || alvoId === botNumber) return reply(`*ɴᴀᴏ ᴘᴏssᴏ ᴍᴜᴛᴀʀ ᴏ ʙᴏᴛ 😵*`);
+        if (alvoDono) return reply(`*ɴᴀᴏ ᴏᴜsᴇ ᴛᴏᴄᴀʀ ɴᴏ ᴍᴇᴜ ᴅᴏɴᴏ 💢*`);
+        if (alvoAdmin) return reply(`*ɴᴀᴏ ᴘᴏᴅᴇ ᴍᴜᴛᴀʀ ᴜᴍ ᴀᴅᴍɪɴ*`);
+
+        const dirMute = `./DATABASE2/GRUPOS/MUTE/${from}.json`;
+        if (!fs.existsSync('./DATABASE2/GRUPOS/MUTE')) {
+            fs.mkdirSync('./DATABASE2/GRUPOS/MUTE', { recursive: true });
+        }
+        if (!fs.existsSync(dirMute)) {
+            fs.writeFileSync(dirMute, JSON.stringify([{ silenciados: [], mutados: [] }], null, 2));
+        }
+
+        const dataMute = JSON.parse(fs.readFileSync(dirMute));
+        const grupoMute = dataMute[0];
+
+        const tipo = args[0]?.toLowerCase() === 'silenciar' ? 'silenciar' : 'mutar';
+
+        if (tipo === 'silenciar') {
+            if (grupoMute.silenciados.includes(alvoId)) {
+                return mention(`*ᴏ @${alvoNumero} ᴊᴀ ᴇsᴛᴀ sɪʟᴇɴᴄɪᴀᴅᴏ*`);
+            }
+            grupoMute.silenciados.push(alvoId);
+            fs.writeFileSync(dirMute, JSON.stringify(dataMute, null, 2));
+            await mention(`*ᴏ @${alvoNumero} ꜰᴏɪ sɪʟᴇɴᴄɪᴀᴅᴏ ᴘᴏʀ @${executorNumero} 🔇*`);
+        } else {
+            if (grupoMute.mutados.includes(alvoId)) {
+                return mention(`*ᴏ @${alvoNumero} ᴊᴀ ᴇsᴛᴀ ᴍᴜᴛᴀᴅᴏ*`);
+            }
+            grupoMute.mutados.push(alvoId);
+            fs.writeFileSync(dirMute, JSON.stringify(dataMute, null, 2));
+            await mention(`*ᴏ @${alvoNumero} ꜰᴏɪ ᴍᴜᴛᴀᴅᴏ ᴘᴏʀ @${executorNumero} 🚫*`);
+        }
+
+        await reagir(from, "✅");
+    } catch (erro) {
+        console.log(erro);
+        await reagir(from, "❌");
+        reply("❌ Erro ao mutar usuário.");
     }
-    grupoMute.silenciados.push(menc_os2);
-    fs.writeFileSync(dirMute, JSON.stringify(dataMute, null, 2));
-    mention(`*ᴏ @${menc_os2.split('@')[0]} ꜰᴏɪ sɪʟᴇɴᴄɪᴀᴅᴏ ᴘᴏʀ @${sender.split('@')[0]} 🔇*`);
-  } else {
-    if (grupoMute.mutados.includes(menc_os2)) {
-      return mention(`*ᴏ @${menc_os2.split('@')[0]} ᴊᴀ ᴇsᴛᴀ ᴍᴜᴛᴀᴅᴏ*`);
-    }
-    grupoMute.mutados.push(menc_os2);
-    fs.writeFileSync(dirMute, JSON.stringify(dataMute, null, 2));
-    mention(`*ᴏ @${menc_os2.split('@')[0]} ꜰᴏɪ ᴍᴜᴛᴀᴅᴏ ᴘᴏʀ @${sender.split('@')[0]} 🚫*`);
-  }
 }
 break;
 
 case 'desmute': {
-  if (!isGroup) return reply(msg.SoEmGrupo);
-  if (!isGroupAdmins) return reply(msg.SoAdmin);
-  if (!isBotGroupAdmins) return reply(msg.BotAdmin);
-  if (!menc_os2) return reply(`*🎯 ᴍᴇɴᴄɪᴏɴᴇ ǫᴜᴇᴍ ǫᴜᴇʀ ᴅᴇsᴍᴜᴛᴀʀ*`);
+    try {
+        if (!isGroup) return reply(msg.SoEmGrupo);
 
-  const dirMute = `./DATABASE2/GRUPOS/MUTE/${from}.json`;
-  if (!fs.existsSync(dirMute)) {
-    return mention(`*ᴏ @${menc_os2.split('@')[0]} ɴᴀᴏ ᴇsᴛᴀ ᴘᴜɴɪᴅᴏ*`);
-  }
-  const dataMute = JSON.parse(fs.readFileSync(dirMute));
-  const grupoMute = dataMute[0];
+        const executorJid = info.key.participant || info.key.remoteJid || sender;
+        const executorJidNormalizado = jidNormalizedUser(executorJid);
 
-  const estasilenciado = grupoMute.silenciados.includes(menc_os2);
-  const estamutado = grupoMute.mutados.includes(menc_os2);
+        const verificar = await sistemaVerificacao(conn, from, executorJidNormalizado, { numerodono: NumberDono }, botNumber);
 
-  if (!estasilenciado && !estamutado) {
-    return mention(`*ᴏ @${menc_os2.split('@')[0]} ɴᴀᴏ ᴇsᴛᴀ ᴘᴜɴɪᴅᴏ*`);
-  }
+        if (!verificar.isSenderAdmin && !verificar.isDonoBot) return reply(msg.SoAdmin);
+        if (!verificar.isBotAdmin) return reply(msg.BotAdmin);
 
-  grupoMute.silenciados = grupoMute.silenciados.filter(id => id !== menc_os2);
-  grupoMute.mutados = grupoMute.mutados.filter(id => id !== menc_os2);
-  fs.writeFileSync(dirMute, JSON.stringify(dataMute, null, 2));
-  mention(`*ᴏ @${menc_os2.split('@')[0]} ꜰᴏɪ ʟɪʙᴇʀᴀᴅᴏ ᴘᴏʀ @${sender.split('@')[0]} 🙆‍♂️*`);
+        let alvo = null;
+        const contextInfo = info?.message?.extendedTextMessage?.contextInfo || {};
+
+        if (contextInfo.mentionedJid?.length > 0) {
+            alvo = contextInfo.mentionedJid[0];
+        } else if (contextInfo.participant) {
+            alvo = contextInfo.participant;
+        } else if (info?.quoted?.sender) {
+            alvo = info.quoted.sender;
+        } else if (q) {
+            const numero = q.replace(/\D/g, '');
+            if (numero.length >= 5) alvo = numero;
+        }
+
+        if (!alvo) return reply(`*🎯 ᴍᴇɴᴄɪᴏɴᴇ ǫᴜᴇᴍ ᴅᴇsᴍᴜᴛᴀʀ*`);
+
+        const membro = verificar.buscarMembro(alvo);
+        if (!membro) return reply("❌ Usuário não encontrado.");
+
+        const alvoId = verificar.getId(membro);
+        const alvoNumero = verificar.getNumero(membro);
+
+        const dirMute = `./DATABASE2/GRUPOS/MUTE/${from}.json`;
+        if (!fs.existsSync(dirMute)) return mention(`*ᴏ @${alvoNumero} ɴᴀᴏ ᴇsᴛᴀ ᴘᴜɴɪᴅᴏ*`);
+
+        const dataMute = JSON.parse(fs.readFileSync(dirMute));
+        const grupoMute = dataMute[0];
+
+        const estaSilenciado = grupoMute.silenciados.includes(alvoId);
+        const estaMutado = grupoMute.mutados.includes(alvoId);
+
+        if (!estaSilenciado && !estaMutado) {
+            return mention(`*ᴏ @${alvoNumero} ɴᴀᴏ ᴇsᴛᴀ ᴘᴜɴɪᴅᴏ*`);
+        }
+
+        grupoMute.silenciados = grupoMute.silenciados.filter(id => id !== alvoId);
+        grupoMute.mutados = grupoMute.mutados.filter(id => id !== alvoId);
+        fs.writeFileSync(dirMute, JSON.stringify(dataMute, null, 2));
+        await mention(`*ᴏ @${alvoNumero} ꜰᴏɪ ᴅᴇsᴘᴜɴɪᴅᴏ ᴘᴏʀ @${verificar.getNumero({ id: executorJidNormalizado })} 🙌*`);
+
+        await reagir(from, "✅");
+    } catch (erro) {
+        console.log(erro);
+        await reagir(from, "❌");
+        reply("❌ Erro ao desmutar usuário.");
+    }
+}
+break;
+
+case 'desmute': {
+    try {
+        if (!isGroup) return reply(msg.SoEmGrupo);
+
+        const executorJid = info.key.participant || info.key.remoteJid || sender;
+        const executorJidNormalizado = jidNormalizedUser(executorJid);
+
+        const verificar = await sistemaVerificacao(conn, from, executorJidNormalizado, { numerodono: NumberDono }, botNumber);
+
+        if (!verificar.isSenderAdmin && !verificar.isDonoBot) return reply(msg.SoAdmin);
+        if (!verificar.isBotAdmin) return reply(msg.BotAdmin);
+
+        let alvo = null;
+        const contextInfo = info?.message?.extendedTextMessage?.contextInfo || {};
+
+        if (contextInfo.mentionedJid?.length > 0) {
+            alvo = contextInfo.mentionedJid[0];
+        } else if (contextInfo.participant) {
+            alvo = contextInfo.participant;
+        } else if (info?.quoted?.sender) {
+            alvo = info.quoted.sender;
+        } else if (q) {
+            const numero = q.replace(/\D/g, '');
+            if (numero.length >= 5) alvo = numero;
+        }
+
+        if (!alvo) return reply(`*🎯 ᴍᴇɴᴄɪᴏɴᴇ ǫᴜᴇᴍ ᴅᴇsᴍᴜᴛᴀʀ*`);
+
+        const membro = verificar.buscarMembro(alvo);
+        if (!membro) return reply("❌ Usuário não encontrado.");
+
+        const alvoId = verificar.getId(membro);
+        const alvoNumero = verificar.getNumero(membro);
+
+        const dirMute = `./DATABASE2/GRUPOS/MUTE/${from}.json`;
+        if (!fs.existsSync(dirMute)) {
+            return mention(`*ᴏ @${alvoNumero} ɴᴀᴏ ᴇsᴛᴀ ᴘᴜɴɪᴅᴏ*`);
+        }
+
+        const dataMute = JSON.parse(fs.readFileSync(dirMute));
+        const grupoMute = dataMute[0];
+
+        const estaSilenciado = grupoMute.silenciados.includes(alvoId);
+        const estaMutado = grupoMute.mutados.includes(alvoId);
+
+        if (!estaSilenciado && !estaMutado) {
+            return mention(`*ᴏ @${alvoNumero} ɴᴀᴏ ᴇsᴛᴀ ᴘᴜɴɪᴅᴏ*`);
+        }
+
+        grupoMute.silenciados = grupoMute.silenciados.filter(id => id !== alvoId);
+        grupoMute.mutados = grupoMute.mutados.filter(id => id !== alvoId);
+        fs.writeFileSync(dirMute, JSON.stringify(dataMute, null, 2));
+        
+        await mention(`*ᴏ @${alvoNumero} ꜰᴏɪ ʟɪʙᴇʀᴀᴅᴏ ᴘᴏʀ @${verificar.getNumero({ id: executorJidNormalizado })} 🙆‍♂️*`);
+        await reagir(from, "✅");
+
+    } catch (erro) {
+        console.log(erro);
+        await reagir(from, "❌");
+        reply("❌ Erro ao desmutar usuário.");
+    }
 }
 break;
 
@@ -884,26 +959,38 @@ case 'perfil': {
 }
 break;
 
-case 'antilinkhard':
-case 'antilink':
-if(!isGroup) return reply(msg.SoEmGrupo)
-if(!isGroupAdmins) return reply(msg.SoAdmin)
-if(!isBotGroupAdmins) return reply(msg.BotAdmin)
-if(args.length < 1) return reply('1 pra ligar / 0 pra desligar')
-if(Number(args[0]) === 1) {
-if(isAntiLinkHard) return reply('O recurso de antilink hardcore já está ativado.')
-dataGp[0].antilinkhard = true
-setGp(dataGp)
-reply(MSG.Ativado)
-} else if(Number(args[0]) === 0) {
-if(!isAntiLinkHard) return reply('O recurso de antilink hardcore já está desativado.')
-dataGp[0].antilinkhard = false
-setGp(dataGp)
-reply(MSG.Desativado)
-} else {
-reply('1 para ativar, 0 para desativar')
+break;
+case 'antilink': {
+  try {
+    if (!isGroup) return reply(msg.SoEmGrupo);
+    const executorJid = info.key.participant || info.key.remoteJid || sender;
+    const executorJidNormalizado = jidNormalizedUser(executorJid);
+    const verificar = await sistemaVerificacao(conn, from, executorJidNormalizado, { numerodono: NumberDono }, botNumber);
+    if (!verificar.isSenderAdmin && !verificar.isDonoBot) return reply(msg.SoAdmin);
+    if (!verificar.isBotAdmin) return reply(msg.BotAdmin);
+    if (args.length < 1) return reply('1 pra ligar / 0 pra desligar');
+
+    const isAntiLinkAtual = dataGp[0].antilinkhard || false;  
+
+    if (Number(args[0]) === 1) {
+      if (isAntiLinkAtual) return reply('O recurso de antilink já está ativado.');
+      dataGp[0].antilinkhard = true;  
+      setGp(dataGp);
+      reply(MSG.Ativado);
+    } else if (Number(args[0]) === 0) {
+      if (!isAntiLinkAtual) return reply('O recurso de antilink já está desativado.');
+      dataGp[0].antilinkhard = false; 
+      setGp(dataGp);
+      reply(MSG.Desativado);
+    } else {
+      reply('1 para ativar, 0 para desativar');
+    }
+  } catch (erro) {
+    console.log(erro);
+    reply("Erro ao executar comando.");
+  }
 }
-break
+break;
 
 case 'rvisu':
 case 'revelar': {
@@ -1945,6 +2032,21 @@ reply("❌ Erro ao buscar imagens no Pinterest.");
 }
 break;
 
+case 'play_video': {
+try {
+if (!q.trim()) return reply("*_Cadê o nome ou link do YouTube?_*");
+await reagir(from, "🔍");
+await reply(msg.Download);
+await play_video(q, conn, from, info, quoted, ShizukuStile);
+await reagir(from, "✅");
+} catch (e) {
+console.log("❌ ERRO PLAY_VIDEO:", e);
+await reagir(from, "❌");
+reply(`Erro ao buscar resultados\n\n${e.message}`);
+}
+}
+break;
+
 case 'play': {
 try {
 if (!q) return reply('❌ Digite o nome da música/vídeo');
@@ -2163,31 +2265,30 @@ case 'autoexpulsar': {
 }
 break;
 
-case 'ttkdl': case 'tiktokdl': {
+case 'ttkdl':
+case 'tiktokdl': {
 try {
-if(!q?.trim()) { 
-return reply("*_Cade o url do video?_*") 
-}
-if(!SoLink)  return reply("*_Apenas links_*") 
+if (!q?.trim()) return reply("*_Cadê o link do vídeo?_*")
+if (!SoLink) return reply("*_Apenas links_*")
 await reply(msg.Download)
-await ttkdl(q, conn, from, info, quoted, ShizukuStile, SHIZUKU_SITE, SHIZUKU_KEY);
-await reagir(from, "✅");
+await ttkdl(q, conn, from, info, quoted, ShizukuStile, sysite, syskey)
+await reagir(from, "✅")
 } catch (e) {
-reply("Erro") 
+console.log(e)
+reply("Erro ao baixar vídeo!")
 }
-}break;
+}
+break;
 
 case 'instadl': {
 try {
-if(!q.trim()) {
-return reply("*_Cade o link do vídeo do Instagram?_*")
-} 
-if(!SoLink) return reply("*_Apenas links_*");
+if (!q.trim()) return reply("*_Cadê o link do vídeo do Instagram?_*");
+if (!SoLink) return reply("*_Apenas links_*");
 await reply(msg.Download);
-await instadl(q, conn, from, info, quoted, ShizukuStile, SHIZUKU_SITE, SHIZUKU_KEY) 
+await instadl(q, conn, from, info, quoted, ShizukuStile);
 await reagir(from, "✅");
 } catch (e) {
-await reply("Erro ao buscar resultados");
+reply("Erro ao buscar resultados");
 }
 }
 break;

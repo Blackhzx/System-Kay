@@ -1,7 +1,7 @@
 [
   {
-    "name": "teste grupo",
-    "groupId": "120363426893991315@g.us",
+    "name": "Projeto de vídeos",
+    "groupId": "120363406598549145@g.us",
     "antilinkhard": false,
     "So_Admins": false,
     "bangp": false,
@@ -17,6 +17,6 @@
         "legendasaiu": "Adeus, #numerodele#, espero que não se arrependa pela sua decisão. "
       }
     ],
-    "antistatus": true
+    "antilink": true
   }
 ]

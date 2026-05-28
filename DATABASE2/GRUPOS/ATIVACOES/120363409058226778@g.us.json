@@ -2,7 +2,7 @@
   {
     "name": "🇪🇸 ɢʀʊքօ ɖɛʟ ӄǟʏ ֆʏֆȶɛʍ 🇪🇸",
     "groupId": "120363409058226778@g.us",
-    "antilinkhard": false,
+    "antilinkhard": true,
     "So_Admins": false,
     "bangp": true,
     "wellcome": [
@@ -16,6 +16,8 @@
         "legendabv": "Olá #numerodele#, seja bem vindo(a) ao Grupo: *#nomedogp#*, kay lhe deseja as boas vindas 🕸️",
         "legendasaiu": "Adeus, #numerodele#, espero que não se arrependa pela sua decisão. "
       }
-    ]
+    ],
+    "antistatus": true,
+    "antilink": true
   }
 ]

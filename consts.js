@@ -22,7 +22,7 @@ const data = moment.tz('America/Sao_Paulo').format('DD/MM/YYYY');
 
 const { sendVideoAsSticker2, sendImageAsSticker2 } = require('./DATABASE2/sticker/rename.js');
 
-const { BuscarNogpt, BaixarNoYt, ttkdl, instadl, METADINHAS } = require("./DATABASE2/SCRAPERS/scrapers");
+const { BuscarNogpt, BaixarNoYt, ttkdl, instadl, play_video, METADINHAS } = require("./DATABASE2/SCRAPERS/scrapers");
 //EXPORTAÇÃO 
 const { menu } = require("./dono/menus/menu")
 const { menus } = require("./dono/menus/Shizuku")
@@ -112,6 +112,7 @@ moment,
 msg,
 axios,
 kyun,
+play_video,
 infoSystem,
 os,
 menu,

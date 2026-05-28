@@ -1,5 +1,7 @@
 const fetch = require('node-fetch');
 
+const { sysite, syskey, prefix } = require('../../dono/dono');
+
 async function BuscarNogpt(query, SHIZUKU_SITE, SHIZUKU_KEY) {
 try {const res = await fetch(`${SHIZUKU_SITE}/api/ias/gpt-2?query=${encodeURIComponent(query?.trim())}&apitoken=${SHIZUKU_KEY}`);
 const api = await res.json()
@@ -20,46 +22,83 @@ return "Erro ao buscar resultados";
 }
 };
 
-async function ttkdl(url, conn, from, info, quoted, ShizukuStile, SHIZUKU_SITE, SHIZUKU_KEY) {
-if(!url?.includes("tiktok")) return conn.sendMessage(from, {text: "Apenas links do tiktok"}, {quoted: info})
-try {const res = await fetch(`${SHIZUKU_SITE}/download/tiktokdl-2?url=${encodeURIComponent(url.trim())}&apitoken=${SHIZUKU_KEY}`)
+async function ttkdl(url, conn, from, info, quoted, ShizukuStile) {
+try {
+if (!url) return conn.sendMessage(from, { text: "❌ Cadê o link do TikTok?" }, { quoted: info });
+const apiUrl = `${sysite}/api/downloads/tiktokv3?apikey=${syskey}&url=${encodeURIComponent(url)}`;
+const res = await fetch(apiUrl);
+if (!res.ok) throw new Error(`HTTP ${res.status}`);
 const api = await res.json();
+if (!api || api.status !== true) return conn.sendMessage(from, { text: "❌ Erro ao buscar vídeo do TikTok." }, { quoted: info });
+const videoUrl = api?.download_url;
+if (!videoUrl) return conn.sendMessage(from, { text: "❌ Não encontrei a URL do vídeo." }, { quoted: info });
+const videoBuffer = await getBuffer(videoUrl);
+if (!videoBuffer) return conn.sendMessage(from, { text: "❌ Erro ao baixar vídeo." }, { quoted: info });
+const autor = api?.autor?.nickname || "Desconhecido";
+const username = api?.autor?.username || "desconhecido";
+const likes = api?.stats?.like || 0;
+const views = api?.stats?.views || 0;
+const comments = api?.stats?.comment || 0;
+const txt = `🎬 *TIKTOK DL*
 
-if(!api?.resultado) return conn.sendMessage(from, {text: "Erro ao buscar por resultados"}, {quoted: info})
-const i = api?.resultado?.data[0];
-const txt = `*Titulo:* ${i?.title}
-*Sub Titulo:* ${i?.title_audio}
+👤 ${autor}
+📛 @${username}
 
-*DOWNLOAD VIA SHIZUKU API'S*`;
-setTimeout(() => {
-return conn.sendMessage(from, {image: {url: i?.thumb}, caption: txt}, {quoted: info})
-}, 2000);
-setTimeout(() => {
-return conn.sendMessage(from, {video: {url: i?.videoMp4}, mimetype: "video/mp4"}, {quoted: info});
-}, 2000);
-setTimeout(() => {
-return conn.sendMessage(from, {audio: {url: i?.audioMp3}, mimetype: "audio/mpeg", ptt: false, contextInfo: ShizukuStile}, {quoted: info})
-}, 2000);
+❤️ ${likes} • 👀 ${views} • 💬 ${comments}`;
+await conn.sendMessage(from, { video: videoBuffer, mimetype: "video/mp4", caption: txt, contextInfo: ShizukuStile }, { quoted: info });
 } catch (e) {
-return conn.sendMessage(from, {text: "Erro ao buscar por resultados!"});
+return conn.sendMessage(from, { text: "❌ Erro ao baixar vídeo." }, { quoted: info });
 }
-};
+}
 
-async function instadl(url, conn, from, info, quoted, ShizukuStile, SHIZUKU_SITE, SHIZUKU_KEY) {
-if(!url?.includes("instagram")) return conn.sendMessage(from, {text: "Apenas links do Instagram"}, {quoted: info})
-try {const res = await fetch(`${SHIZUKU_SITE}/download/igdl?url=${encodeURIComponent(url?.trim())}&apitoken=${SHIZUKU_KEY}`);
+async function play_video(text, conn, from, info, quoted, ShizukuStile) {
+try {
+const axios = require("axios");
+if (!text) return conn.sendMessage(from, { text: "❌ Cadê o nome ou link?" }, { quoted: info });
+const apiUrl = `${sysite}/api/ytmp4?apikey=${syskey}&text=${encodeURIComponent(text)}`;
+const res = await fetch(apiUrl);
+if (!res.ok) throw new Error(`HTTP ${res.status}`);
 const api = await res.json();
-if(!api?.resultado) return conn.sendMessage(from, {text: "Erro ao obter informações do vídeo"}, {quoted: info});
-const i = api?.resultado[0];
-setTimeout(() => {
-return conn.sendMessage(from, {image: {url: i?.thumb}, caption: "*_baixando e enviando o vídeo, aguarde.._*"}, {quoted: info});
-}, 2000);
-setTimeout(() => {
-return conn.sendMessage(from, {video: {url: i?.url}, mimetype: "video/mp4"}, {quoted: info});
-}, 2000);
+if (!api?.status) return conn.sendMessage(from, { text: "❌ Erro ao buscar vídeo" }, { quoted: info });
+const videoUrl = api?.result?.download;
+if (!videoUrl) return conn.sendMessage(from, { text: "❌ Não encontrei o vídeo" }, { quoted: info });
+const videoBuffer = (await axios.get(videoUrl, { responseType: "arraybuffer" })).data;
+const txt = `🎬 *YT VIDEO*\n\n📛 ${api?.result?.title || "Desconhecido"}\n⏱️ ${api?.result?.duration || "0:00"} • 📀 ${api?.result?.quality || "?"} • 📦 ${api?.result?.size || "?"}`;
+await conn.sendMessage(from, { video: videoBuffer, mimetype: "video/mp4", caption: txt, contextInfo: ShizukuStile }, { quoted: info });
 } catch (e) {
-conn.sendMessage(from, {text: "Erro ao buscar resultados"});
-return;
+return conn.sendMessage(from, { text: `❌ ERRO:\n\n${e.message}` }, { quoted: info });
+}
+}
+
+async function instadl(url, conn, from, info, quoted, ShizukuStile) {
+try {
+if (!url) return conn.sendMessage(from, { text: "❌ Cadê o link do Instagram?" }, { quoted: info });
+const apiUrl = `${sysite}/api/V2/instagram?apikey=${syskey}&url=${encodeURIComponent(url)}`;
+const res = await fetch(apiUrl);
+if (!res.ok) throw new Error(`HTTP ${res.status}`);
+const api = await res.json();
+if (!api?.status) return conn.sendMessage(from, { text: "❌ Erro ao buscar mídia" }, { quoted: info });
+const mediaUrl = api?.media?.[0];
+if (!mediaUrl) return conn.sendMessage(from, { text: "❌ Não encontrei mídia" }, { quoted: info });
+const mediaBuffer = await getBuffer(mediaUrl);
+const autor = api?.author?.name || "Desconhecido";
+const username = api?.author?.username || "desconhecido";
+const likes = api?.stats?.likes || 0;
+const views = api?.stats?.views || 0;
+const comments = api?.stats?.comments || 0;
+const txt = `📸 *INSTA DL*
+
+👤 ${autor}
+📛 @${username}
+
+❤️ ${likes} • 👀 ${views} • 💬 ${comments}`;
+if (api?.type === "video") {
+await conn.sendMessage(from, { video: mediaBuffer, mimetype: "video/mp4", caption: txt, contextInfo: ShizukuStile }, { quoted: info });
+} else {
+await conn.sendMessage(from, { image: mediaBuffer, caption: txt, contextInfo: ShizukuStile }, { quoted: info });
+}
+} catch (e) {
+return conn.sendMessage(from, { text: "❌ Erro ao baixar mídia" }, { quoted: info });
 }
 }
 
@@ -79,4 +118,11 @@ conn.sendMessage(from, {image: {url: mulher}, caption: "👰 | Perfil feminino"}
 return conn.sendMessage(from, {text: "Erro no comando"}, {quoted: info});
 }
 }
-module.exports = { BuscarNogpt, BaixarNoYt, ttkdl, instadl, METADINHAS }
+module.exports = {
+BuscarNogpt,
+BaixarNoYt,
+ttkdl,
+instadl,
+play_video,
+METADINHAS
+}
